@@ -26,6 +26,7 @@ router = APIRouter()
 # =========================
 @router.post("/login", response_model=TokenResponse)
 async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
+
     result = await db.execute(
         select(User).where(
             User.email == payload.email,
@@ -35,10 +36,16 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
 
     user = result.scalar_one_or_none()
 
-    if not user or not verify_password(payload.password, user.password_hash):
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="User not found",
+        )
+
+    if not verify_password(payload.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect password",
         )
 
     return TokenResponse(
@@ -51,13 +58,14 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
 
 
 # =========================
-# REFRESH
+# REFRESH TOKEN
 # =========================
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh_token(
     payload: RefreshRequest,
     db: AsyncSession = Depends(get_db)
 ):
+
     token_data = decode_refresh_token(payload.refresh_token)
 
     if not token_data:
@@ -96,11 +104,3 @@ async def refresh_token(
 @router.get("/me", response_model=UserOut)
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
-
-@router.get("/generate-hash")
-async def generate_hash():
-    from app.core.security import hash_password
-
-    return {
-        "hash": hash_password("admin123")
-    }

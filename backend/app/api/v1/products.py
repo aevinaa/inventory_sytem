@@ -40,11 +40,13 @@ async def list_products(
 @router.post("", response_model=ProductOut)
 async def create_product(
     data: ProductCreate,
+    shop_id: str,
     service: ProductService = Depends(get_service),
     current_user=Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new product. SKU is auto-generated."""
+    data.shop_id = shop_id
     # Get category name for SKU prefix generation
     category_name = None
     if data.category_id:

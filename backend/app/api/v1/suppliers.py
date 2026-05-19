@@ -24,9 +24,11 @@ async def list_suppliers(
 @router.post("", response_model=SupplierOut)
 async def create_supplier(
     data: SupplierCreate,
+    shop_id: str,
     db: AsyncSession = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
+    data.shop_id = shop_id
     supplier = Supplier(**data.model_dump())
     db.add(supplier)
     await db.commit()

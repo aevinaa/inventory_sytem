@@ -12,7 +12,7 @@ class ProductCreate(BaseModel):
     unit: str = "piece"
     quantity: int = 0
     low_stock_threshold: int = 5
-    shop_id: str
+    shop_id: str | None = None
 
 
 class ProductUpdate(BaseModel):

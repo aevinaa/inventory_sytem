@@ -24,7 +24,7 @@ async def list_suppliers(
 @router.post("", response_model=SupplierOut)
 async def create_supplier(
     data: SupplierCreate,
-    shop_id: str,
+    shop_id: str | None = None,
     db: AsyncSession = Depends(get_db),
     current_user=Depends(get_current_user),
 ):

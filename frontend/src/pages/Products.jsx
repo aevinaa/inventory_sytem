@@ -19,6 +19,7 @@ const Products = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [supplierId, setSupplierId] = useState('');
   const [lowStockOnly, setLowStockOnly] = useState(false);
 
   const debouncedSearch = useDebounce(search, 300);

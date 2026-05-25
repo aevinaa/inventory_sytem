@@ -1,5 +1,20 @@
 import apiClient from './client';
 
+const downloadBlob = (blob, filename) => {
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+
+  document.body.appendChild(a);
+  a.click();
+
+  a.remove();
+
+  window.URL.revokeObjectURL(url);
+};
+
 export const getDailySales = async (targetDate, shopId) => {
   const response = await apiClient.get('/reports/daily-sales', {
     params: { target_date: targetDate, shop_id: shopId },

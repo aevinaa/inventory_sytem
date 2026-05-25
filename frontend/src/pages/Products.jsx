@@ -47,6 +47,20 @@ const Products = () => {
     enabled: !!currentShop?.id,
   });
 
+  const { data: suppliers = [] } = useQuery({
+    queryKey: ['suppliers', currentShop?.id],
+
+    queryFn: async () => {
+      const res = await apiClient.get('/suppliers', {
+        params: { shop_id: currentShop?.id }
+      });
+
+      return res.data;
+    },
+
+    enabled: !!currentShop?.id,
+  });
+  
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: 24 }}>
       {/* Header */}
